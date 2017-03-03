@@ -21,20 +21,39 @@ if parentheses
 #include "Node.h"
 
 int main(){
-  String infix;
+  char infix [100];
   cout<<"Enter your expression"<<endl;
   cin.getline(infix);
   cin.ignore();
-  String postfix = convert(infix);
+
+  char postfix [] = convert(infix);
   cout<<postfix<<endl;
 }
 
-String convert(string infix){
-  String postfix = "";
-  for(int i=0; i<infix.length(); i++){
+String convert(char[] infix){
+  char postfix [100]= {0};
+  for(int i=0; i<???; i++){
+/*
+if operand, then print
+if left, push to stack
+if right, discard and pop/print stack until left and discard left
+if operator and stack is empty or (. push to stack
+if operator has higher as op on top, push to stack
+if operator and lower or equal pre as op on top, pop stack until not true, push incoming operator
+pop and print all operators
 
+*/
   }
   return postfix;
+}
+
+bool isOperand (char c){
+  if(isdigit(c) == true){
+    return true;
+  }
+  else{
+    return false;
+  }
 }
 
 bool isOperator (char c){
@@ -43,9 +62,27 @@ bool isOperator (char c){
   }
 }
 
-bool isParentheses (char c){
+bool isPar (char c){
   if(c == "(" || c == ")"){
     return true;
+  }
+}
+
+bool isLeft (char c){
+  if(c == "("){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+bool isRight (char c){
+  if(c == ")"){
+    return true;
+  }
+  else{
+    return false;
   }
 }
 
@@ -61,4 +98,18 @@ int getWeight (char c){
     weight = 3;
   }
   return weight;
+}
+
+bool higherPrecedence(char a, char b){
+//a is stack
+//b is current
+//keep popping the stack until higher
+  int aWeight = getWeight(a);
+  int bWeight = getWeight(b);
+  if (aWeight > b weight){
+    return true;
+  }
+  else{
+    return false;
+  }
 }

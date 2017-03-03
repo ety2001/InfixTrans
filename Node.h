@@ -8,6 +8,6 @@ class Node{
 		Node(char);
 		~Node();
 		Node* push(Node*&, char);
-		Node* pop(Node*&);
+		char pop(Node*&);
+		bool empty(Node*&);
 };
-

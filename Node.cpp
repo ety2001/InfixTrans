@@ -13,5 +13,17 @@ Node::~Node(){
 	delete next;
 }
 
-Node* Node::push(Node*& newnode, char newval){
+Node* Node::push(Node*& oldstack, char newval){
+	Node* newnode = new Node(newval);
+	newnode->setNext(oldstack);
+  return newnode;
+}
 
+char Node::pop(Node*& oldstack){
+	oldstack->next = oldstack->next->next;
+	return oldstack->val;
+}
+
+bool Node::empty(Node*& stack){
+
+}
