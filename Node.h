@@ -1,13 +1,12 @@
 // Node.h
-
+// Node class for creating an operator stack
 class Node{
 	private:
 		Node* next;
 		char val;
 	public:
 		Node(char);
-		~Node();
-		Node* push(Node*&, char);
-		char pop(Node*&);
-		bool empty(Node*&);
+		Node* getNext();
+		char getVal();
+		void setNext(Node*);
 };
