@@ -4,67 +4,7 @@
 #include <iostream>
 #include "Node.h"
 
-int main(){
-  char infix [200];
-  cout<<"Enter your expression"<<endl;
-  cin.getline(infix);
-  cin.ignore();
-  convert(infix);
-}
-
-void convert(char[] infix){
-  Node* opstack = NULL;
-  char top[10];
-  int numchars = 0;
-  for(int i = 0; infix[i]!='\0'; i++){
-    // if operand, then print
-    if(isdigit(infix[i])){
-      top[numchars] = infix[i];
-      numchars++;
-    }
-    // if space, end of token
-    else if(infix[i] == ' '){
-      // print if operand
-      if(numchars>0){
-        top[numchars] = '\0';
-        cout<<top<<" ";
-        numchars = 0;
-      }
-    }
-    // if left, push to stack
-    else if(isLeft(infix[i]){
-      push(opstack, infix[i]);
-    }
-    // if right, discard and pop/print stack until left and discard left
-    else if(isRight(infix[i]){
-      while(peak(opstack)!='('){
-        cout<<pop(opstack)<<" ";
-      }
-      pop(opstack);
-    }
-    // if operator
-    else if(isOperator(infix[i]){
-      // if stack is empty or (, push to stack
-      if(peak(opstack)=='(' || empty(opstack)){
-        push(opstack, infix[i]);
-      }
-      else{
-        // pop stack until if operator has higher precedence or rightAsso, then push to stack
-        while(!empty(opstack) &&
-              (precedence(infix[i], peak(opstack)) < 0 ||
-               precedence(infix[i], peak(opstack)) == 0 && !isRightAsso(infix[i])
-              )){
-          cout<<pop(opstack)<<" ";
-        }
-        push(opstack, infix[i]);
-      }
-    }
-  }
-  // pop and print remaining operators on stack
-  while(!empty(opstack)){
-    cout<<pop(opstack)<<" ";
-  }
-}
+using namespace std;
 
 // pushes an operator onto stack
 void push(Node*& stack, char newval){
@@ -74,13 +14,13 @@ void push(Node*& stack, char newval){
 }
 // gets value and removes operator from top of stack
 char pop(Node*& stack){
-	char op = stack->val;
-	stack = stack->next;
+	char op = stack->getVal();
+	stack = stack->getNext();
 	return op;
 }
 // gets value from top of stack
 char peak(Node*& stack){
-  return stack->val;
+  return stack->getVal();
 }
 // checks if stack is empty
 bool empty(Node*& stack){
@@ -94,7 +34,7 @@ bool isOperator (char c){
 }
 // checks if left parenthesis
 bool isLeft (char c){
-  if(c == "("){
+  if(c == '('){
     return true;
   }
   else{
@@ -103,7 +43,7 @@ bool isLeft (char c){
 }
 // checks if right parenthesis
 bool isRight (char c){
-  if(c == ")"){
+  if(c == ')'){
     return true;
   }
   else{
@@ -113,13 +53,13 @@ bool isRight (char c){
 // gets weight of operator (for precedence)
 int getWeight (char c){
   int weight = -1;
-  if (c == "+" || c == "-") {
+  if (c == '+' || c == '-') {
     weight = 1;
   }
-  else if (c == "*" || c == "/"){
+  else if (c == '*' || c == '/'){
     weight = 2;
   }
-  else if (c == "^"){
+  else if (c == '^'){
     weight = 3;
   }
   return weight;
@@ -144,4 +84,69 @@ int precedence(char a, char b){
 // checks if operator is right associative
 bool isRightAsso(char c){
   return(c == '^');
+}
+
+void convert(char* infix){
+  Node* opstack = NULL;
+  char top[10];
+  int numchars = 0;
+  for(int i = 0; infix[i]!='\0'; i++){
+    // if operand, then print
+    if(isdigit(infix[i])){
+      top[numchars] = infix[i];
+      numchars++;
+    }
+    // if space, end of token
+    else if(infix[i] == ' '){
+      // print if operand
+      if(numchars>0){
+        top[numchars] = '\0';
+        cout<<top<<" ";
+        numchars = 0;
+      }
+    }
+    // if left, push to stack
+    else if(isLeft(infix[i])){
+      push(opstack, infix[i]);
+    }
+    // if right, discard and pop/print stack until left and discard left
+    else if(isRight(infix[i])){
+      while(peak(opstack)!='('){
+        cout<<pop(opstack)<<" ";
+      }
+      pop(opstack);
+    }
+    // if operator
+    else if(isOperator(infix[i])){
+      // if stack is empty or (, push to stack
+      if(empty(opstack) || peak(opstack)=='('){
+        push(opstack, infix[i]);
+      }
+      else{
+        // pop stack until if operator has higher precedence or rightAsso, then push to stack
+        while(!empty(opstack) &&
+              (precedence(infix[i], peak(opstack)) < 0 ||
+               precedence(infix[i], peak(opstack)) == 0 && !isRightAsso(infix[i])
+              )){
+          cout<<pop(opstack)<<" ";
+        }
+        push(opstack, infix[i]);
+      }
+    }
+  }
+  if(numchars>0){
+    top[numchars] = '\0';
+    cout<<top<<" ";
+  }
+  // pop and print remaining operators on stack
+  while(!empty(opstack)){
+    cout<<pop(opstack)<<" ";
+  }
+}
+
+int main(){
+  char infix [200];
+  cout<<"Enter your expression"<<endl;
+  cin.getline(infix, 200);
+  convert(infix);
 }
