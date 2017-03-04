@@ -1,73 +1,98 @@
 // Main.cpp
-/*
-if number
-  push to output queue
-if function
-  push to stack
-  if parentheses
-      until top of stack is "(" pop operators of stack onto queue
+// Takes an infix expression and converts it to postfix using the Shunting Yard Algorithm
 
-for operator o1 and o2
-o2 is at the top of the stack
-o1 is left associative and is less than or equal to o2
-OR o1 is right asso and less than o2
-  then pop o2 off operator stack and onto output queue
-then push o1 onto operator stack
-
-if parentheses
-  "(" push onto stack
-*/
 #include <iostream>
 #include "Node.h"
 
 int main(){
-  char infix [100];
+  char infix [200];
   cout<<"Enter your expression"<<endl;
   cin.getline(infix);
   cin.ignore();
-
-  char postfix [] = convert(infix);
-  cout<<postfix<<endl;
+  convert(infix);
 }
 
-String convert(char[] infix){
-  char postfix [100]= {0};
-  for(int i=0; i<???; i++){
-/*
-if operand, then print
-if left, push to stack
-if right, discard and pop/print stack until left and discard left
-if operator and stack is empty or (. push to stack
-if operator has higher as op on top, push to stack
-if operator and lower or equal pre as op on top, pop stack until not true, push incoming operator
-pop and print all operators
-
-*/
+void convert(char[] infix){
+  Node* opstack = NULL;
+  char top[10];
+  int numchars = 0;
+  for(int i = 0; infix[i]!='\0'; i++){
+    // if operand, then print
+    if(isdigit(infix[i])){
+      top[numchars] = infix[i];
+      numchars++;
+    }
+    // if space, end of token
+    else if(infix[i] == ' '){
+      // print if operand
+      if(numchars>0){
+        top[numchars] = '\0';
+        cout<<top<<" ";
+        numchars = 0;
+      }
+    }
+    // if left, push to stack
+    else if(isLeft(infix[i]){
+      push(opstack, infix[i]);
+    }
+    // if right, discard and pop/print stack until left and discard left
+    else if(isRight(infix[i]){
+      while(peak(opstack)!='('){
+        cout<<pop(opstack)<<" ";
+      }
+      pop(opstack);
+    }
+    // if operator
+    else if(isOperator(infix[i]){
+      // if stack is empty or (, push to stack
+      if(peak(opstack)=='(' || empty(opstack)){
+        push(opstack, infix[i]);
+      }
+      else{
+        // pop stack until if operator has higher precedence or rightAsso, then push to stack
+        while(!empty(opstack) &&
+              (precedence(infix[i], peak(opstack)) < 0 ||
+               precedence(infix[i], peak(opstack)) == 0 && !isRightAsso(infix[i])
+              )){
+          cout<<pop(opstack)<<" ";
+        }
+        push(opstack, infix[i]);
+      }
+    }
   }
-  return postfix;
+  // pop and print remaining operators on stack
+  while(!empty(opstack)){
+    cout<<pop(opstack)<<" ";
+  }
 }
 
-bool isOperand (char c){
-  if(isdigit(c) == true){
-    return true;
-  }
-  else{
-    return false;
-  }
+// pushes an operator onto stack
+void push(Node*& stack, char newval){
+	Node* newnode = new Node(newval);
+	newnode->setNext(stack);
+	stack = newnode;
 }
-
+// gets value and removes operator from top of stack
+char pop(Node*& stack){
+	char op = stack->val;
+	stack = stack->next;
+	return op;
+}
+// gets value from top of stack
+char peak(Node*& stack){
+  return stack->val;
+}
+// checks if stack is empty
+bool empty(Node*& stack){
+	return (stack==NULL);
+}
+// checks if token is operator
 bool isOperator (char c){
   if(c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '(' || c == ')'){
     return true;
   }
 }
-
-bool isPar (char c){
-  if(c == "(" || c == ")"){
-    return true;
-  }
-}
-
+// checks if left parenthesis
 bool isLeft (char c){
   if(c == "("){
     return true;
@@ -76,7 +101,7 @@ bool isLeft (char c){
     return false;
   }
 }
-
+// checks if right parenthesis
 bool isRight (char c){
   if(c == ")"){
     return true;
@@ -85,7 +110,7 @@ bool isRight (char c){
     return false;
   }
 }
-
+// gets weight of operator (for precedence)
 int getWeight (char c){
   int weight = -1;
   if (c == "+" || c == "-") {
@@ -99,17 +124,24 @@ int getWeight (char c){
   }
   return weight;
 }
-
-bool higherPrecedence(char a, char b){
-//a is stack
-//b is current
-//keep popping the stack until higher
+// checks if two operators have lower/equal/higher precednce
+int precedence(char a, char b){
+// -1: a<b
+// 0: a=b
+// 1: a>b
   int aWeight = getWeight(a);
   int bWeight = getWeight(b);
-  if (aWeight > b weight){
-    return true;
+  if (aWeight < bWeight){
+    return -1;
   }
-  else{
-    return false;
+  else if (aWeight == bWeight){
+    return 0;
   }
+  else {
+    return 1;
+  }
+}
+// checks if operator is right associative
+bool isRightAsso(char c){
+  return(c == '^');
 }
